@@ -1,0 +1,24 @@
+{
+  "name": "url_shortener",
+  "version": "1.0.0",
+  "description": "A simple Node.js application that allows users to shorten long URLs into compact, easy-to-share links. The service generates a unique short code for each original URL and redirects users to the original address when the short link is accessed. This project demonstrates the use of Express.js, MongoDB (or any database), and basic RESTful API principles.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ramajan-tahashildar/URL_Shortener.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ramajan-tahashildar/URL_Shortener/issues"
+  },
+  "homepage": "https://github.com/ramajan-tahashildar/URL_Shortener#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
