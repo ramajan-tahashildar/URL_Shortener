@@ -1,8 +1,13 @@
 import express from "express";
-import postRequest from "../controllers/data.js";
+import { generateNewShortURL } from "../controllers/url.js";
+import { getRedirectUrl } from "../controllers/url.js";
 
-const routes = express.Router();
+const router = express.Router();
 
-routes.post("/", postRequest);
+//generate url shortener
+router.post("/", generateNewShortURL);
 
-export default routes;
+//get redirect url
+router.get("/:shortID", getRedirectUrl);
+
+export default router;

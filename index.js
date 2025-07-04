@@ -1,17 +1,28 @@
 import express from "express";
-import routes from "./routes/routes.js";
+import router from "./routes/routes.js";
+import middleware from "./middleware/index.js";
+import connect from "./connection.js";
+import dotenv from "dotenv";
+dotenv.config();
 
+//init express
 const app = express();
-const PORT = 3000;
+
+//Custome middleware
 app.use(express.json());
+app.use(middleware("./log.txt"));
+
+//port
+const PORT = 3000;
+
+//Database Connection
+const DB_URL = process.env.MONGODATABASE_URL;
+connect(DB_URL);
+
+//Routes
+app.use("/url", router);
+
+//app listener
 app.listen(PORT, () => {
   return console.log(`Server is listening on http://localhost:${PORT}`);
-});
-
-app.use("/data", routes);
-app.get("/get", (req, res) => {
-  return res.status(200).json({
-    message: "this is dummy page",
-    status: "success",
-  });
 });
