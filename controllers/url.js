@@ -52,6 +52,12 @@ async function getRedirectUrl(req, res) {
         },
       }
     );
+    if (!result) {
+      return res.status(404).json({
+        message: "Url not found",
+        status: "failed",
+      });
+    }
     // console.log(result);
     // const findUrl = await url.findOne({ shortId: shortID });
     return res.status(200).redirect(result.redirectUrl);
@@ -66,8 +72,20 @@ async function getRedirectUrl(req, res) {
 async function getAnalytics(req, res) {
   try {
     const shortID = req.params.shortID;
+    if (!shortID) {
+      return res.status(400).json({
+        message: "Url is required",
+        status: "failed",
+      });
+    }
     // console.log(shortID);
     const result = await url.findOne({ shortId: shortID });
+    if (!result)
+      return res.status(404).json({
+        message: "Url not found",
+        status: "failed",
+      });
+    // console.log(result)
     // console.log(result);
     return res.status(200).json({
       totalVisitCounter: result.visitHistory.length,
