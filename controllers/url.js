@@ -52,7 +52,7 @@ async function getRedirectUrl(req, res) {
         },
       }
     );
-    console.log(result);
+    // console.log(result);
     // const findUrl = await url.findOne({ shortId: shortID });
     return res.status(200).redirect(result.redirectUrl);
   } catch (err) {
@@ -63,4 +63,45 @@ async function getRedirectUrl(req, res) {
   }
 }
 
-export { generateNewShortURL, getRedirectUrl };
+async function getAnalytics(req, res) {
+  try {
+    const shortID = req.params.shortID;
+    // console.log(shortID);
+    const result = await url.findOne({ shortId: shortID });
+    // console.log(result);
+    return res.status(200).json({
+      totalVisitCounter: result.visitHistory.length,
+      visitHistory: result.visitHistory,
+      status: "success",
+    });
+    // return res.status(200).send(`
+    //   <html>
+    //   <head>
+    //     <title>URL Analytics</title>
+    //   </head>
+    //   <body>
+    //     <h1>Analytics for Short URL: ${shortID}</h1>
+    //     <p><strong>Total Visitors:</strong> ${result.visitHistory.length}</p>
+    //     <h2>Visit History:</h2>
+    //     <ul>
+    //     ${result.visitHistory
+    //       .map(
+    //         (visit, idx) =>
+    //           `<li>#${idx + 1} - Time: ${new Date(
+    //             visit.timestamp
+    //           ).toLocaleString()}</li>`
+    //       )
+    //       .join("")}
+    //     </ul>
+    //   </body>
+    //   </html>
+    // `);
+  } catch (err) {
+    return res.status(500).json({
+      message: "Internal server error",
+      status: "failed",
+    });
+  }
+}
+
+export { generateNewShortURL, getRedirectUrl, getAnalytics };

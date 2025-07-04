@@ -19,9 +19,11 @@
   },
   "homepage": "https://github.com/ramajan-tahashildar/URL_Shortener#readme",
   "dependencies": {
+    "code": "^5.2.4",
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
     "mongoose": "^8.16.1",
-    "nanoid": "^5.1.5"
+    "nanoid": "^5.1.5",
+    "qr": "^0.5.0"
   }
 }
