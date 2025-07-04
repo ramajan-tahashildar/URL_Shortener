@@ -20,7 +20,7 @@ const DB_URL = process.env.MONGODATABASE_URL;
 connect(DB_URL);
 
 //Routes
-app.use("/url", router);
+app.use("/api/url", router);
 
 //app listener
 app.listen(PORT, () => {
