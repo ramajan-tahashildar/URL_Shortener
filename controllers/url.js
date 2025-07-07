@@ -1,19 +1,31 @@
 import { nanoid } from "nanoid";
 import url from "../models/url.js";
+import QRCode from "qrcode";
 
 async function generateNewShortURL(req, res) {
   try {
     const body = req.body;
     const shortID = nanoid(8);
+
     if (!body.redirectUrl) {
       return res.status(400).json({
         message: "Url is required",
         status: "failed",
       });
     }
+
+    // Build your shortener URL (adjust host as needed)
+    const host = req.protocol + "://" + req.get("host");
+    const shortUrl = `${host}/api/url/${shortID}`;
+    // console.log(shortUrl);
+
+    // Generate QR code for the shortener URL
+    const qrCodeData = await QRCode.toDataURL(shortUrl);
+
     const result = await url.create({
       shortId: shortID,
       redirectUrl: body.redirectUrl,
+      qrCode: qrCodeData,
       visitHistory: [],
     });
 
