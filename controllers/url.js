@@ -16,7 +16,7 @@ async function generateNewShortURL(req, res) {
 
     // Build your shortener URL (adjust host as needed)
     const host = req.protocol + "://" + req.get("host");
-    const shortUrl = `${host}/api/url/${shortID}`;
+    const shortUrl = `http://10.10.13.94:3000/api/url/${shortID}`;
     // console.log(shortUrl);
 
     // Generate QR code for the shortener URL
@@ -29,10 +29,16 @@ async function generateNewShortURL(req, res) {
       visitHistory: [],
     });
 
-    return res.status(201).json({
-      message: "ShortURL created successfully",
-      url: shortID,
-      status: "success",
+    // return res.status(201).json({
+    //   message: "ShortURL created successfully",
+    //   url: shortID,
+    //   status: "success",
+    // });
+
+    return res.render("success", {
+      shortId: shortID,
+      shortUrl,
+      qrCode: qrCodeData,
     });
   } catch (err) {
     return res.status(500).json({
@@ -82,77 +88,39 @@ async function getRedirectUrl(req, res) {
 }
 
 async function getAnalytics(req, res) {
+  // console.log("[getAnalytics] Route hit");
   try {
     const shortID = req.params.shortID;
+    // console.log("[getAnalytics] shortID:", shortID);
     if (!shortID) {
+      // console.log("[getAnalytics] No shortID provided");
       return res.status(400).json({
         message: "Url is required",
         status: "failed",
       });
     }
-    // console.log(shortID);
     const result = await url.findOne({ shortId: shortID });
-    if (!result)
+    if (!result) {
+      // console.log("[getAnalytics] No result found for shortID:", shortID);
       return res.status(404).json({
         message: "Url not found",
         status: "failed",
       });
-    // console.log(result)
-    // console.log(result);
-    return res.status(200).json({
+    }
+    // console.log("[getAnalytics] Result found for shortID:", shortID);
+    res.render("analytics", {
+      shortId: shortID,
       totalVisitCounter: result.visitHistory.length,
       visitHistory: result.visitHistory,
-      status: "success",
     });
-    // return res.status(200).send(`
-    //   <html>
-    //   <head>
-    //     <title>URL Analytics</title>
-    //   </head>
-    //   <body>
-    //     <h1>Analytics for Short URL: ${shortID}</h1>
-    //     <p><strong>Total Visitors:</strong> ${result.visitHistory.length}</p>
-    //     <h2>Visit History:</h2>
-    //     <ul>
-    //     ${result.visitHistory
-    //       .map(
-    //         (visit, idx) =>
-    //           `<li>#${idx + 1} - Time: ${new Date(
-    //             visit.timestamp
-    //           ).toLocaleString()}</li>`
-    //       )
-    //       .join("")}
-    //     </ul>
-    //   </body>
-    //   </html>
-    // `);
   } catch (err) {
+    // console.error("[getAnalytics] Error:", err);
     return res.status(500).json({
       message: "Internal server error",
       status: "failed",
     });
   }
 }
-
-// async function getAllUrl(req, res) {
-//   console.log("hello");
-//   try {
-//     const result = await url.find();
-//     console.log(result);
-//     if (!result) {
-//       return res.status(404).json({
-//         message: "Urls not found",
-//         status: "failed",
-//       });
-//     }
-//     return res.render("home");
-//   } catch (err) {
-//     return res.status(500).json({
-//       message: "Internal server error",
-//       status: "failed",
-//     });
-//   }
-// }
 
 async function getAllUrl(req, res) {
   try {
@@ -169,4 +137,25 @@ async function getAllUrl(req, res) {
   }
 }
 
-export { generateNewShortURL, getRedirectUrl, getAnalytics, getAllUrl };
+async function getUrlDetails(req, res) {
+  try {
+    const { shortID } = req.params;
+    const result = await url.findOne({ shortId: shortID });
+
+    if (!result) {
+      return res.status(404).send("URL not found");
+    }
+
+    return res.render("details", { data: result });
+  } catch (err) {
+    return res.status(500).send("Internal server error");
+  }
+}
+
+export {
+  generateNewShortURL,
+  getRedirectUrl,
+  getAnalytics,
+  getAllUrl,
+  getUrlDetails,
+};
