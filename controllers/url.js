@@ -134,4 +134,39 @@ async function getAnalytics(req, res) {
   }
 }
 
-export { generateNewShortURL, getRedirectUrl, getAnalytics };
+// async function getAllUrl(req, res) {
+//   console.log("hello");
+//   try {
+//     const result = await url.find();
+//     console.log(result);
+//     if (!result) {
+//       return res.status(404).json({
+//         message: "Urls not found",
+//         status: "failed",
+//       });
+//     }
+//     return res.render("home");
+//   } catch (err) {
+//     return res.status(500).json({
+//       message: "Internal server error",
+//       status: "failed",
+//     });
+//   }
+// }
+
+async function getAllUrl(req, res) {
+  try {
+    const result = await url.find(); // get all URL entries from DB
+
+    return res.render("home", {
+      urls: result,
+    }); // pass urls to EJS template
+  } catch (err) {
+    return res.status(500).json({
+      message: "Internal server error",
+      status: "failed",
+    });
+  }
+}
+
+export { generateNewShortURL, getRedirectUrl, getAnalytics, getAllUrl };

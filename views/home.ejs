@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All Short URLs</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 80%;
+      margin: 20px auto;
+    }
+    th, td {
+      border: 1px solid #999;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    body {
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="text-align: center;">All Shortened URLs</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Short ID</th>
+        <th>Original URL</th>
+        <th>QR Code</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% urls.forEach(url => { %>
+        <tr>
+          <td><%= url.shortId %></td>
+          <td><a href="<%= url.redirectUrl %>" target="_blank"><%= url.redirectUrl %></a></td>
+          <td>
+            <% if (url.qrCode) { %>
+              <img src="<%= url.qrCode %>" width="100" />
+            <% } %>
+          </td>
+          <td><%= new Date(url.createdAt || url._id.getTimestamp()).toLocaleString() %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</body>
+</html>

@@ -3,10 +3,16 @@ import router from "./routes/routes.js";
 import middleware from "./middleware/index.js";
 import connect from "./connection.js";
 import dotenv from "dotenv";
+import path from "path";
+
 dotenv.config();
 
 //init express
 const app = express();
+
+//ejs setup
+app.set("view engine", "ejs");
+app.set("views", path.join(path.resolve(), "views"));
 
 //Custome middleware
 app.use(express.json());
