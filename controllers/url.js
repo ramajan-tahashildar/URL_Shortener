@@ -17,7 +17,6 @@ async function generateNewShortURL(req, res) {
     // Build your shortener URL (adjust host as needed)
     const host = req.protocol + "://" + req.get("host");
     const shortUrl = `http://10.10.13.94:3000/api/url/${shortID}`;
-    // console.log(shortUrl);
 
     // Generate QR code for the shortener URL
     const qrCodeData = await QRCode.toDataURL(shortUrl);
@@ -29,16 +28,11 @@ async function generateNewShortURL(req, res) {
       visitHistory: [],
     });
 
-    // return res.status(201).json({
-    //   message: "ShortURL created successfully",
-    //   url: shortID,
-    //   status: "success",
-    // });
-
-    return res.render("success", {
-      shortId: shortID,
-      shortUrl,
+    return res.status(201).json({
+      message: "ShortURL created successfully",
       qrCode: qrCodeData,
+      url: shortUrl,
+      status: "success",
     });
   } catch (err) {
     return res.status(500).json({
@@ -76,8 +70,7 @@ async function getRedirectUrl(req, res) {
         status: "failed",
       });
     }
-    // console.log(result);
-    // const findUrl = await url.findOne({ shortId: shortID });
+
     return res.status(200).redirect(result.redirectUrl);
   } catch (err) {
     return res.status(500).json({
@@ -88,12 +81,10 @@ async function getRedirectUrl(req, res) {
 }
 
 async function getAnalytics(req, res) {
-  // console.log("[getAnalytics] Route hit");
   try {
     const shortID = req.params.shortID;
-    // console.log("[getAnalytics] shortID:", shortID);
+
     if (!shortID) {
-      // console.log("[getAnalytics] No shortID provided");
       return res.status(400).json({
         message: "Url is required",
         status: "failed",
@@ -101,20 +92,18 @@ async function getAnalytics(req, res) {
     }
     const result = await url.findOne({ shortId: shortID });
     if (!result) {
-      // console.log("[getAnalytics] No result found for shortID:", shortID);
       return res.status(404).json({
         message: "Url not found",
         status: "failed",
       });
     }
-    // console.log("[getAnalytics] Result found for shortID:", shortID);
-    res.render("analytics", {
-      shortId: shortID,
-      totalVisitCounter: result.visitHistory.length,
-      visitHistory: result.visitHistory,
+
+    return res.status(200).json({
+      message: "Analytics found successfully",
+      data: result,
+      status: "success",
     });
   } catch (err) {
-    // console.error("[getAnalytics] Error:", err);
     return res.status(500).json({
       message: "Internal server error",
       status: "failed",
@@ -125,10 +114,11 @@ async function getAnalytics(req, res) {
 async function getAllUrl(req, res) {
   try {
     const result = await url.find(); // get all URL entries from DB
-
-    return res.render("home", {
-      urls: result,
-    }); // pass urls to EJS template
+    return res.status(200).json({
+      message: "All url found successfully",
+      data: result,
+      status: "success",
+    });
   } catch (err) {
     return res.status(500).json({
       message: "Internal server error",
@@ -146,7 +136,10 @@ async function getUrlDetails(req, res) {
       return res.status(404).send("URL not found");
     }
 
-    return res.render("details", { data: result });
+    return res.status(200).json({
+      message: "URL found successfully",
+      data: result,
+    });
   } catch (err) {
     return res.status(500).send("Internal server error");
   }

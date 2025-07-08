@@ -2,7 +2,6 @@ import fs from "fs";
 
 function middleware(filename) {
   return (req, res, next) => {
-    // console.log(req.url);
     const log = `Server accessed on ${req.method} request at ${new Date()}`;
     fs.appendFile(filename, log + "\n", (err) => {
       if (err) {
