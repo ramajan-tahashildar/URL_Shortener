@@ -1,16 +1,16 @@
 import user from "../models/user.js";
 import bcrypt from "bcrypt";
-import { v4 as uuidv4 } from "uuid";
+
 import { setUser, getUser } from "../services/auth.js";
 
 async function signInuser(req, res) {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, role } = req.body;
 
     const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const validPassword =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/;
-    if (!firstName || !lastName || !email || !password) {
+    if (!firstName || !lastName || !email || !password || !role) {
       return res.status(400).json({
         message: "All fields are required",
         status: "failed",
@@ -40,6 +40,7 @@ async function signInuser(req, res) {
       firstName,
       lastName,
       email,
+      role,
       password: hashedPassword,
     });
 
@@ -58,6 +59,7 @@ async function signInuser(req, res) {
 async function loginUser(req, res) {
   try {
     const { email, password } = req.body;
+
     const result = await user.findOne({ email });
     if (!result) {
       return res.status(404).json({
@@ -65,7 +67,7 @@ async function loginUser(req, res) {
         status: "failed",
       });
     }
-    // Compare the plain password with the hashed password
+
     const isMatch = await bcrypt.compare(password, result.password);
     if (!isMatch) {
       return res.status(404).json({
@@ -76,16 +78,12 @@ async function loginUser(req, res) {
 
     await user.findOneAndUpdate({ email }, { isLoggedIn: true });
 
-    // //stateful sessionID
-    //   const sessionID = uuidv4();
-    //   console.log("sessionID", sessionID); //a368b92d-417f-475d-98ae-2c8f7a1f4eb5
-    //   setUser(sessionID, result);
-    //   // console.log("set session id", id); // undefined
+    const token = setUser(result); // Generate token
 
-    const token = setUser(result);
-    res.cookie("Token", token);
+    // ✅ Only one response sent here
     return res.status(200).json({
       message: "Login successful",
+      token,
       status: "success",
     });
   } catch (err) {

@@ -5,6 +5,7 @@ import QRCode from "qrcode";
 async function generateNewShortURL(req, res) {
   try {
     const body = req.body;
+
     const shortID = nanoid(8);
 
     if (!body.redirectUrl) {
@@ -37,7 +38,7 @@ async function generateNewShortURL(req, res) {
     });
   } catch (err) {
     return res.status(500).json({
-      message: "Internal server error",
+      message: `Internal server error${err}`,
       status: "failed",
     });
   }

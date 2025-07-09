@@ -1,21 +1,10 @@
-//stateful auth <> sessionID
-
-// const sessionIdToUserMap = new Map();
-
-// function setUser(id, user) {
-//   sessionIdToUserMap.set(id, user);
-// }
-
-// function getUser(id) {
-//   return sessionIdToUserMap.get(id);
-// }
-
-// export { setUser, getUser };
-
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 dotenv.config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_EXPIRY_TIME = process.env.JWT_EXPIRY_TIME;
 
 function setUser(user) {
   const payload = {
@@ -23,15 +12,22 @@ function setUser(user) {
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
+    role: user.role,
   };
-  return jwt.sign(payload, process.env.JWT_SECRET);
+
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRY_TIME });
 }
 
 function getUser(token) {
   if (!token) {
     return null;
   }
-  return jwt.verify(token, process.env.JWT_SECRET);
+  try {
+    // console.log(token); // x
+    return jwt.verify(token, JWT_SECRET);
+  } catch (error) {
+    return null;
+  }
 }
 
 export { setUser, getUser };

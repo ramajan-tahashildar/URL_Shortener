@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import router from "./routes/routes.js";
 import userRouter from "./routes/user.js";
 import cookieParser from "cookie-parser";
-import restrictedToLoggedInUsers from "./middleware/auth.js";
+import { restrictedToLoggedInUsers } from "./middleware/auth.js";
 
 //}
 
@@ -17,7 +17,6 @@ const app = express();
 //Custome middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // for form data (HTML forms)
-app.use(cookieParser());
 
 app.use(middleware("./log.txt"));
 

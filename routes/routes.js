@@ -6,11 +6,13 @@ import {
   getAllUrl,
   getUrlDetails,
 } from "../controllers/url.js";
+import { restrictedTo, restrictedToLoggedInUsers } from "../middleware/auth.js";
 
 const router = express.Router();
+router.use(restrictedToLoggedInUsers);
 
 //get analytics
-router.get("/analytics/:shortID", getAnalytics);
+router.get("/analytics/:shortID", restrictedTo(["admin"]), getAnalytics);
 
 //generate url shortener
 router.post("/", generateNewShortURL);
