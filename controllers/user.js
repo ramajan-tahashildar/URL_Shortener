@@ -76,12 +76,14 @@ async function loginUser(req, res) {
 
     await user.findOneAndUpdate({ email }, { isLoggedIn: true });
 
-    const sessionID = uuidv4();
-    console.log("sessionID", sessionID); //a368b92d-417f-475d-98ae-2c8f7a1f4eb5
-    setUser(sessionID, result);
-    // console.log("set session id", id); // undefined
+    // //stateful sessionID
+    //   const sessionID = uuidv4();
+    //   console.log("sessionID", sessionID); //a368b92d-417f-475d-98ae-2c8f7a1f4eb5
+    //   setUser(sessionID, result);
+    //   // console.log("set session id", id); // undefined
 
-    res.cookie("sessionID", sessionID);
+    const token = setUser(result);
+    res.cookie("Token", token);
     return res.status(200).json({
       message: "Login successful",
       status: "success",

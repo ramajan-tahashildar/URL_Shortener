@@ -21,9 +21,11 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "code": "^5.2.4",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.0.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.1",
     "nanoid": "^5.1.5",
     "qr": "^0.5.0",

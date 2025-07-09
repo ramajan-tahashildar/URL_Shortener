@@ -26,6 +26,7 @@ async function generateNewShortURL(req, res) {
       redirectUrl: body.redirectUrl,
       qrCode: qrCodeData,
       visitHistory: [],
+      createdBy: req.user._id,
     });
 
     return res.status(201).json({
@@ -113,7 +114,13 @@ async function getAnalytics(req, res) {
 
 async function getAllUrl(req, res) {
   try {
-    const result = await url.find(); // get all URL entries from DB
+    if (!req.user) {
+      return res.status(401).json({
+        message: "Unauthorized",
+        status: "failed",
+      });
+    }
+    const result = await url.find({ createdBy: req.user._id }); // get all URL entries from DB
     return res.status(200).json({
       message: "All url found successfully",
       data: result,

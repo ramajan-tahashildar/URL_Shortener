@@ -21,6 +21,11 @@ const urlSchema = new mongoose.Schema(
     qrCode: {
       type: String, // Store as SVG string or Data URL
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
   },
   {
     timestamps: true,
